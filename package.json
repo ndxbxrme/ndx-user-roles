@@ -1,0 +1,28 @@
+{
+  "name": "ndx-user-roles",
+  "version": "0.0.2",
+  "description": "user roles for ndx-framework",
+  "main": "build/app.js",
+  "scripts": {
+    "test": "node build/test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ndxbxrme/ndx-user-roles.git"
+  },
+  "author": "ndxbxrme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ndxbxrme/ndx-user-roles/issues"
+  },
+  "homepage": "https://github.com/ndxbxrme/ndx-user-roles",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-coffee": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-express-server": "^0.5.3",
+    "load-grunt-tasks": "^3.5.2"
+  }
+}
