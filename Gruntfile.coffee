@@ -12,7 +12,7 @@ module.exports = (grunt) ->
           spawn: false
           atBegin: true
         files: ['src/**/*.coffee']
-        tasks: ['build', 'express:web']
+        tasks: ['build']
     coffee:
       options:
         sourceMap: true
@@ -33,6 +33,6 @@ module.exports = (grunt) ->
   ]
   grunt.registerTask 'default', [
     'build'
-    'express:web'
+    #'express:web'
     'watch'
   ]
