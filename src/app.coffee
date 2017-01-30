@@ -77,8 +77,6 @@ module.exports = (ndx) ->
         if truth
           next()
         else
-          res.json
-            error: 'Not authenticated'
+          throw ndx.UNAUTHORIZED
       else
-        res.json
-          error: 'Not authenticated'
+        throw ndx.UNAUTHORIZED

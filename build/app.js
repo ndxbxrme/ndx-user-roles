@@ -105,14 +105,10 @@
           if (truth) {
             return next();
           } else {
-            return res.json({
-              error: 'Not authenticated'
-            });
+            throw ndx.UNAUTHORIZED;
           }
         } else {
-          return res.json({
-            error: 'Not authenticated'
-          });
+          throw ndx.UNAUTHORIZED;
         }
       };
     };
