@@ -1,6 +1,6 @@
 {
   "name": "ndx-user-roles",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "user roles for ndx-framework",
   "main": "build/app.js",
   "scripts": {

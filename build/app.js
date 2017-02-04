@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   module.exports = function(ndx) {
-    return ndx.app.use('/api/*', function(req, res, next) {
+    ndx.app.use('/api/*', function(req, res, next) {
       if (req.user) {
         if (Object.prototype.toString.call(req.user) === '[object Object]') {
           req.user.addRole = function(role) {
@@ -68,49 +68,49 @@
             return allgood;
           };
         }
-        next();
       }
-      return ndx.authenticate = function(role) {
-        return function(req, res, next) {
-          var getRole, j, len, r, rolesToCheck, truth;
-          if (req.user) {
-            rolesToCheck = [];
-            getRole = function(role) {
-              var j, len, r, results, type;
-              type = Object.prototype.toString.call(role);
-              if (type === '[object Array]') {
-                results = [];
-                for (j = 0, len = role.length; j < len; j++) {
-                  r = role[j];
-                  results.push(getRole(r));
-                }
-                return results;
-              } else if (type === '[object Function]') {
-                r = role(req);
-                return getRole(r);
-              } else if (type === '[object String]') {
-                if (rolesToCheck.indexOf(role) === -1) {
-                  return rolesToCheck.push(role);
-                }
+      return next();
+    });
+    return ndx.authenticate = function(role) {
+      return function(req, res, next) {
+        var getRole, j, len, r, rolesToCheck, truth;
+        if (req.user) {
+          rolesToCheck = [];
+          getRole = function(role) {
+            var j, len, r, results, type;
+            type = Object.prototype.toString.call(role);
+            if (type === '[object Array]') {
+              results = [];
+              for (j = 0, len = role.length; j < len; j++) {
+                r = role[j];
+                results.push(getRole(r));
               }
-            };
-            getRole(role);
-            truth = true;
-            for (j = 0, len = rolesToCheck.length; j < len; j++) {
-              r = rolesToCheck[j];
-              truth = truth && req.user.hasRole(r);
+              return results;
+            } else if (type === '[object Function]') {
+              r = role(req);
+              return getRole(r);
+            } else if (type === '[object String]') {
+              if (rolesToCheck.indexOf(role) === -1) {
+                return rolesToCheck.push(role);
+              }
             }
-            if (truth) {
-              return next();
-            } else {
-              throw ndx.UNAUTHORIZED;
-            }
+          };
+          getRole(role);
+          truth = true;
+          for (j = 0, len = rolesToCheck.length; j < len; j++) {
+            r = rolesToCheck[j];
+            truth = truth && req.user.hasRole(r);
+          }
+          if (truth) {
+            return next();
           } else {
             throw ndx.UNAUTHORIZED;
           }
-        };
+        } else {
+          throw ndx.UNAUTHORIZED;
+        }
       };
-    });
+    };
   };
 
 }).call(this);

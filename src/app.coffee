@@ -53,29 +53,29 @@ module.exports = (ndx) ->
                 allgood = false
                 break
           allgood
-      next()
-    ndx.authenticate = (role) ->
-      (req, res, next) ->
-        if req.user
-          rolesToCheck = []
-          getRole = (role) ->
-            type = Object.prototype.toString.call role
-            if type is '[object Array]'
-              for r in role
-                getRole r
-            else if type is '[object Function]'
-              r = role req
+    next()
+  ndx.authenticate = (role) ->
+    (req, res, next) ->
+      if req.user
+        rolesToCheck = []
+        getRole = (role) ->
+          type = Object.prototype.toString.call role
+          if type is '[object Array]'
+            for r in role
               getRole r
-            else if type is '[object String]'
-              if rolesToCheck.indexOf(role) is -1
-                rolesToCheck.push role
-          getRole role
-          truth = true
-          for r in rolesToCheck
-            truth = truth and req.user.hasRole(r)
-          if truth
-            next()
-          else
-            throw ndx.UNAUTHORIZED
+          else if type is '[object Function]'
+            r = role req
+            getRole r
+          else if type is '[object String]'
+            if rolesToCheck.indexOf(role) is -1
+              rolesToCheck.push role
+        getRole role
+        truth = true
+        for r in rolesToCheck
+          truth = truth and req.user.hasRole(r)
+        if truth
+          next()
         else
           throw ndx.UNAUTHORIZED
+      else
+        throw ndx.UNAUTHORIZED
