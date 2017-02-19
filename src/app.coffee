@@ -73,7 +73,7 @@ module.exports = (ndx) ->
         truth = false
         for r in rolesToCheck
           truth = truth or req.user.hasRole(r)
-        if truth
+        if truth or not role
           next()
         else
           throw ndx.UNAUTHORIZED

@@ -101,7 +101,7 @@
             r = rolesToCheck[j];
             truth = truth || req.user.hasRole(r);
           }
-          if (truth) {
+          if (truth || !role) {
             return next();
           } else {
             throw ndx.UNAUTHORIZED;
