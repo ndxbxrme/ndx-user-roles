@@ -70,9 +70,9 @@ module.exports = (ndx) ->
             if rolesToCheck.indexOf(role) is -1
               rolesToCheck.push role
         getRole role
-        truth = true
+        truth = false
         for r in rolesToCheck
-          truth = truth and req.user.hasRole(r)
+          truth = truth or req.user.hasRole(r)
         if truth
           next()
         else

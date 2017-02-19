@@ -96,10 +96,10 @@
             }
           };
           getRole(role);
-          truth = true;
+          truth = false;
           for (j = 0, len = rolesToCheck.length; j < len; j++) {
             r = rolesToCheck[j];
-            truth = truth && req.user.hasRole(r);
+            truth = truth || req.user.hasRole(r);
           }
           if (truth) {
             return next();
