@@ -19,6 +19,7 @@ module.exports = (ndx) ->
             req.user.roles
             req.user._id
           ]
+          return
         req.user.removeRole = (role) ->
           getKey = (root, key) ->
             root[key]
@@ -38,6 +39,7 @@ module.exports = (ndx) ->
             req.user.roles
             req.user._id
           ]
+          return
         req.user.hasRole = (role) ->
           getKey = (root, key) ->
             root[key]
@@ -69,12 +71,14 @@ module.exports = (ndx) ->
           else if type is '[object String]'
             if rolesToCheck.indexOf(role) is -1
               rolesToCheck.push role
+          return
         getRole role
         truth = false
         for r in rolesToCheck
           truth = truth or req.user.hasRole(r)
+        rolesToCheck = null
         if truth or not role
-          next()
+          return next()
         else
           throw ndx.UNAUTHORIZED
       else

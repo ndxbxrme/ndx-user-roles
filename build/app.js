@@ -21,7 +21,7 @@
               key = keys[j];
               root = addKey(root, key);
             }
-            return ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
+            ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
           };
           req.user.removeRole = function(role) {
             var getKey, i, key, keys, root;
@@ -43,7 +43,7 @@
                 delete root[key];
               }
             }
-            return ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
+            ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
           };
           req.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
@@ -77,21 +77,19 @@
         if (req.user) {
           rolesToCheck = [];
           getRole = function(role) {
-            var j, len, r, results, type;
+            var j, len, r, type;
             type = Object.prototype.toString.call(role);
             if (type === '[object Array]') {
-              results = [];
               for (j = 0, len = role.length; j < len; j++) {
                 r = role[j];
-                results.push(getRole(r));
+                getRole(r);
               }
-              return results;
             } else if (type === '[object Function]') {
               r = role(req);
-              return getRole(r);
+              getRole(r);
             } else if (type === '[object String]') {
               if (rolesToCheck.indexOf(role) === -1) {
-                return rolesToCheck.push(role);
+                rolesToCheck.push(role);
               }
             }
           };
@@ -101,6 +99,7 @@
             r = rolesToCheck[j];
             truth = truth || req.user.hasRole(r);
           }
+          rolesToCheck = null;
           if (truth || !role) {
             return next();
           } else {
