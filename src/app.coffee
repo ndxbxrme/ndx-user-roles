@@ -15,10 +15,9 @@ module.exports = (ndx) ->
           root = req.user.roles
           for key in keys
             root = addKey root, key
-          ndx.database.exec 'UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [
-            req.user.roles
-            req.user._id
-          ]
+          ndx.database.update ndx.settings.USER_TABLE,
+            roles: req.user.roles
+          , _id: req.user._id
           return
         req.user.removeRole = (role) ->
           getKey = (root, key) ->
@@ -35,10 +34,9 @@ module.exports = (ndx) ->
             key = keys[keys.length - 1]
             if root[key]
               delete root[key]
-          ndx.database.exec 'UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [
-            req.user.roles
-            req.user._id
-          ]
+          ndx.database.update ndx.settings.USER_TABLE,
+            roles: req.user.roles
+          , _id: req.user._id
           return
         req.user.hasRole = (role) ->
           getKey = (root, key) ->

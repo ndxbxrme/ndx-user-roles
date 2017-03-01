@@ -21,7 +21,11 @@
               key = keys[j];
               root = addKey(root, key);
             }
-            ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
+            ndx.database.update(ndx.settings.USER_TABLE, {
+              roles: req.user.roles
+            }, {
+              _id: req.user._id
+            });
           };
           req.user.removeRole = function(role) {
             var getKey, i, key, keys, root;
@@ -43,7 +47,11 @@
                 delete root[key];
               }
             }
-            ndx.database.exec('UPDATE ' + ndx.settings.USER_TABLE + ' SET roles=? where _id=?', [req.user.roles, req.user._id]);
+            ndx.database.update(ndx.settings.USER_TABLE, {
+              roles: req.user.roles
+            }, {
+              _id: req.user._id
+            });
           };
           req.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
