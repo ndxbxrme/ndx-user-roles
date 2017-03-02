@@ -8,13 +8,15 @@ ndx-user roles adds these methods to `req.user`
 adds a role to the current user  
 eg, `req.user.addRole 'agency.admin'`
 #### `req.user.removeRole(role)`
-removes a role from the current user
-eg, `req.user.removeRole 'agency.admin'`
+removes a role from the current user  
+eg, `req.user.removeRole 'agency.admin'`  
 #### `req.user.hasRole(role)`
 checks if a user has a specific role  
 `role` can be a string, an array or a function that returns either a string or an array of role names  
 eg,`req.user.hasRole 'agency.admin'  
+
 or `req.user.hasRole ['superadmin', 'admin']  
+
 or
 ```coffeescript
 req.user.hasRole ->
