@@ -15,9 +15,11 @@ module.exports = (ndx) ->
           root = req.user.roles
           for key in keys
             root = addKey root, key
+          where = {}
+          where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
             roles: req.user.roles
-          , _id: req.user._id
+          , where
           return
         req.user.removeRole = (role) ->
           getKey = (root, key) ->
@@ -34,9 +36,10 @@ module.exports = (ndx) ->
             key = keys[keys.length - 1]
             if root[key]
               delete root[key]
+          where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
             roles: req.user.roles
-          , _id: req.user._id
+          , where
           return
         req.user.hasRole = (role) ->
           getKey = (root, key) ->

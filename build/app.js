@@ -5,7 +5,7 @@
       if (req.user) {
         if (Object.prototype.toString.call(req.user) === '[object Object]') {
           req.user.addRole = function(role) {
-            var addKey, j, key, keys, len, root;
+            var addKey, j, key, keys, len, root, where;
             addKey = function(root, key) {
               if (!root[key]) {
                 root[key] = {};
@@ -21,11 +21,11 @@
               key = keys[j];
               root = addKey(root, key);
             }
+            where = {};
+            where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
               roles: req.user.roles
-            }, {
-              _id: req.user._id
-            });
+            }, where);
           };
           req.user.removeRole = function(role) {
             var getKey, i, key, keys, root;
@@ -47,11 +47,10 @@
                 delete root[key];
               }
             }
+            where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
               roles: req.user.roles
-            }, {
-              _id: req.user._id
-            });
+            }, where);
           };
           req.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
