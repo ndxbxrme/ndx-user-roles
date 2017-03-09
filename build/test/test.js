@@ -10,14 +10,14 @@
       }
     ]);
     return ndx.app.use(function(req, res, next) {
-      ndx.extend(req.user, ndx.database.exec('SELECT * FROM users')[0]);
-      req.user.addRole('boom.titz');
-      console.log(req.user);
+      ndx.extend(ndx.user, ndx.database.exec('SELECT * FROM users')[0]);
+      ndx.user.addRole('boom.titz');
+      console.log(ndx.user);
       return next();
     });
   }).controller(function(ndx) {
     return ndx.app.get('/', ndx.authenticate(function(req) {
-      console.log('req.user', req.user);
+      console.log('ndx.user', ndx.user);
       return ['boom.titz'];
     }), function(req, res) {
       return res.end('howdy');

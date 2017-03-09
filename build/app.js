@@ -2,9 +2,9 @@
   'use strict';
   module.exports = function(ndx) {
     ndx.app.use('/api/*', function(req, res, next) {
-      if (req.user) {
-        if (Object.prototype.toString.call(req.user) === '[object Object]') {
-          req.user.addRole = function(role) {
+      if (ndx.user) {
+        if (Object.prototype.toString.call(ndx.user) === '[object Object]') {
+          ndx.user.addRole = function(role) {
             var addKey, j, key, keys, len, root, where;
             addKey = function(root, key) {
               if (!root[key]) {
@@ -13,28 +13,28 @@
               return root[key];
             };
             keys = role.split(/\./g);
-            if (!req.user.roles) {
-              req.user.roles = {};
+            if (!ndx.user.roles) {
+              ndx.user.roles = {};
             }
-            root = req.user.roles;
+            root = ndx.user.roles;
             for (j = 0, len = keys.length; j < len; j++) {
               key = keys[j];
               root = addKey(root, key);
             }
             where = {};
-            where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID];
+            where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
-              roles: req.user.roles
+              roles: ndx.user.roles
             }, where);
           };
-          req.user.removeRole = function(role) {
+          ndx.user.removeRole = function(role) {
             var getKey, i, key, keys, root;
             getKey = function(root, key) {
               return root[key];
             };
             keys = role.split(/\./g);
-            if (req.user.roles && keys.length) {
-              root = req.user.roles;
+            if (ndx.user.roles && keys.length) {
+              root = ndx.user.roles;
               i = 0;
               key = '';
               while (i < keys.length - 1) {
@@ -47,20 +47,20 @@
                 delete root[key];
               }
             }
-            where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID];
+            where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
-              roles: req.user.roles
+              roles: ndx.user.roles
             }, where);
           };
-          req.user.hasRole = function(role) {
+          ndx.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
             getKey = function(root, key) {
               return root[key];
             };
             keys = role.split(/\./g);
             allgood = false;
-            if (req.user.roles) {
-              root = req.user.roles;
+            if (ndx.user.roles) {
+              root = ndx.user.roles;
               for (j = 0, len = keys.length; j < len; j++) {
                 key = keys[j];
                 root = getKey(root, key);
@@ -81,7 +81,7 @@
     return ndx.authenticate = function(role) {
       return function(req, res, next) {
         var getRole, j, len, r, rolesToCheck, truth;
-        if (req.user) {
+        if (ndx.user) {
           rolesToCheck = [];
           getRole = function(role) {
             var j, len, r, type;
@@ -104,7 +104,7 @@
           truth = false;
           for (j = 0, len = rolesToCheck.length; j < len; j++) {
             r = rolesToCheck[j];
-            truth = truth || req.user.hasRole(r);
+            truth = truth || ndx.user.hasRole(r);
           }
           rolesToCheck = null;
           if (truth || !role) {

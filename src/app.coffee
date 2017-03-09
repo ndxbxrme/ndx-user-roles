@@ -2,31 +2,31 @@
 
 module.exports = (ndx) ->
   ndx.app.use '/api/*', (req, res, next) ->
-    if req.user
-      if Object.prototype.toString.call(req.user) is '[object Object]'
-        req.user.addRole = (role) ->
+    if ndx.user
+      if Object.prototype.toString.call(ndx.user) is '[object Object]'
+        ndx.user.addRole = (role) ->
           addKey = (root, key) ->
             if not root[key]
               root[key] = {}
             root[key]
           keys = role.split /\./g
-          if not req.user.roles
-            req.user.roles = {}
-          root = req.user.roles
+          if not ndx.user.roles
+            ndx.user.roles = {}
+          root = ndx.user.roles
           for key in keys
             root = addKey root, key
           where = {}
-          where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID]
+          where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
-            roles: req.user.roles
+            roles: ndx.user.roles
           , where
           return
-        req.user.removeRole = (role) ->
+        ndx.user.removeRole = (role) ->
           getKey = (root, key) ->
             root[key]
           keys = role.split /\./g
-          if req.user.roles and keys.length
-            root = req.user.roles
+          if ndx.user.roles and keys.length
+            root = ndx.user.roles
             i = 0
             key = ''
             while i < keys.length - 1
@@ -36,18 +36,18 @@ module.exports = (ndx) ->
             key = keys[keys.length - 1]
             if root[key]
               delete root[key]
-          where[ndx.settings.AUTO_ID] = req.user[ndx.settings.AUTO_ID]
+          where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
-            roles: req.user.roles
+            roles: ndx.user.roles
           , where
           return
-        req.user.hasRole = (role) ->
+        ndx.user.hasRole = (role) ->
           getKey = (root, key) ->
             root[key]
           keys = role.split /\./g
           allgood = false
-          if req.user.roles
-            root = req.user.roles
+          if ndx.user.roles
+            root = ndx.user.roles
             for key in keys
               root = getKey root, key
               if root
@@ -59,7 +59,7 @@ module.exports = (ndx) ->
     next()
   ndx.authenticate = (role) ->
     (req, res, next) ->
-      if req.user
+      if ndx.user
         rolesToCheck = []
         getRole = (role) ->
           type = Object.prototype.toString.call role
@@ -76,7 +76,7 @@ module.exports = (ndx) ->
         getRole role
         truth = false
         for r in rolesToCheck
-          truth = truth or req.user.hasRole(r)
+          truth = truth or ndx.user.hasRole(r)
         rolesToCheck = null
         if truth or not role
           return next()
