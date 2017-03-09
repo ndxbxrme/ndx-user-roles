@@ -19,7 +19,7 @@ module.exports = (ndx) ->
           where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
             roles: ndx.user.roles
-          , where
+          , where, null, true
           return
         ndx.user.removeRole = (role) ->
           getKey = (root, key) ->
@@ -39,7 +39,7 @@ module.exports = (ndx) ->
           where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
             roles: ndx.user.roles
-          , where
+          , where, null, true
           return
         ndx.user.hasRole = (role) ->
           getKey = (root, key) ->
@@ -57,7 +57,7 @@ module.exports = (ndx) ->
                 break
           allgood
     next()
-  ndx.authenticate = (role) ->
+  ndx.authenticate = (role, obj) ->
     (req, res, next) ->
       if ndx.user
         rolesToCheck = []
@@ -67,7 +67,7 @@ module.exports = (ndx) ->
             for r in role
               getRole r
           else if type is '[object Function]'
-            r = role req
+            r = role obj
             getRole r
           else if type is '[object String]'
             if rolesToCheck.indexOf(role) is -1

@@ -25,7 +25,7 @@
             where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
               roles: ndx.user.roles
-            }, where);
+            }, where, null, true);
           };
           ndx.user.removeRole = function(role) {
             var getKey, i, key, keys, root;
@@ -50,7 +50,7 @@
             where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID];
             ndx.database.update(ndx.settings.USER_TABLE, {
               roles: ndx.user.roles
-            }, where);
+            }, where, null, true);
           };
           ndx.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
@@ -78,7 +78,7 @@
       }
       return next();
     });
-    return ndx.authenticate = function(role) {
+    return ndx.authenticate = function(role, obj) {
       return function(req, res, next) {
         var getRole, j, len, r, rolesToCheck, truth;
         if (ndx.user) {
@@ -92,7 +92,7 @@
                 getRole(r);
               }
             } else if (type === '[object Function]') {
-              r = role(req);
+              r = role(obj);
               getRole(r);
             } else if (type === '[object String]') {
               if (rolesToCheck.indexOf(role) === -1) {
