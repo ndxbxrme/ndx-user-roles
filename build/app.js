@@ -80,30 +80,33 @@
     });
     return ndx.authenticate = function(role, obj) {
       return function(req, res, next) {
-        var getRole, j, len, r, rolesToCheck, truth;
+        var j, k, len, len1, r, rolesToCheck, truth, type;
         if (ndx.user) {
           rolesToCheck = [];
-          getRole = function(role) {
-            var j, len, r, type;
-            type = Object.prototype.toString.call(role);
-            if (type === '[object Array]') {
-              for (j = 0, len = role.length; j < len; j++) {
-                r = role[j];
-                getRole(r);
-              }
-            } else if (type === '[object Function]') {
-              r = role(obj);
-              getRole(r);
-            } else if (type === '[object String]') {
-              if (rolesToCheck.indexOf(role) === -1) {
-                rolesToCheck.push(role);
+          type = Object.prototype.toString.call(role);
+          if (type === '[object Array]') {
+            for (j = 0, len = role.length; j < len; j++) {
+              r = role[j];
+              if (rolesToCheck.indexOf(r) === -1) {
+                rolesToCheck.push(r);
               }
             }
-          };
-          getRole(role);
+          } else if (type === '[object String]') {
+            if (rolesToCheck.indexOf(role) === -1) {
+              rolesToCheck.push(role);
+            }
+          } else if (type === '[object Function]') {
+            role(obj, function(authenticated) {
+              if (authenticated) {
+                return next();
+              } else {
+                throw ndx.UNAUTHORIZED;
+              }
+            });
+          }
           truth = false;
-          for (j = 0, len = rolesToCheck.length; j < len; j++) {
-            r = rolesToCheck[j];
+          for (k = 0, len1 = rolesToCheck.length; k < len1; k++) {
+            r = rolesToCheck[k];
             truth = truth || ndx.user.hasRole(r);
           }
           rolesToCheck = null;
