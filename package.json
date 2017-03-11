@@ -1,12 +1,12 @@
 {
   "name": "ndx-user-roles",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "user roles for ndx-framework",
   "main": "build/app.js",
   "scripts": {
     "test": "node build/test/test.js"
   },
-  "loadOrder": 1
+  "loadOrder": 1,
   "repository": {
     "type": "git",
     "url": "https://github.com/ndxbxrme/ndx-user-roles.git"
