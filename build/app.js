@@ -53,7 +53,7 @@
               roles: ndx.user.roles
             }, where, null, true);
           };
-          ndx.user.hasRole = function(role) {
+          return ndx.user.hasRole = function(role) {
             var allgood, getKey, j, key, keys, len, root;
             getKey = function(root, key) {
               return root[key];
@@ -77,10 +77,10 @@
           };
         }
       }
-      return next();
     };
     ndx.app.use('/api/*', function(req, res, next) {
-      return extendUser();
+      extendUser();
+      return next();
     });
     ndx.authenticate = function(role, obj) {
       return function(req, res, next) {

@@ -56,9 +56,9 @@ module.exports = (ndx) ->
                 allgood = false
                 break
           allgood
-    next()
   ndx.app.use '/api/*', (req, res, next) ->
     extendUser()
+    next()
   ndx.authenticate = (role, obj) ->
     (req, res, next) ->
       if ndx.user
