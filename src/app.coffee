@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = (ndx) ->
-  ndx.app.use '/api/*', (req, res, next) ->
+  extendUser = ->
     if ndx.user
       if Object.prototype.toString.call(ndx.user) is '[object Object]'
         ndx.user.addRole = (role) ->
@@ -57,6 +57,8 @@ module.exports = (ndx) ->
                 break
           allgood
     next()
+  ndx.app.use '/api/*', (req, res, next) ->
+    extendUser()
   ndx.authenticate = (role, obj) ->
     (req, res, next) ->
       if ndx.user
@@ -85,3 +87,5 @@ module.exports = (ndx) ->
           throw ndx.UNAUTHORIZED
       else
         throw ndx.UNAUTHORIZED
+  ndx.auth =
+    extendUser: extendUser

@@ -1,7 +1,8 @@
 (function() {
   'use strict';
   module.exports = function(ndx) {
-    ndx.app.use('/api/*', function(req, res, next) {
+    var extendUser;
+    extendUser = function() {
       if (ndx.user) {
         if (Object.prototype.toString.call(ndx.user) === '[object Object]') {
           ndx.user.addRole = function(role) {
@@ -77,8 +78,11 @@
         }
       }
       return next();
+    };
+    ndx.app.use('/api/*', function(req, res, next) {
+      return extendUser();
     });
-    return ndx.authenticate = function(role, obj) {
+    ndx.authenticate = function(role, obj) {
       return function(req, res, next) {
         var j, k, len, len1, r, rolesToCheck, truth, type;
         if (ndx.user) {
@@ -119,6 +123,9 @@
           throw ndx.UNAUTHORIZED;
         }
       };
+    };
+    return ndx.auth = {
+      extendUser: extendUser
     };
   };
 
