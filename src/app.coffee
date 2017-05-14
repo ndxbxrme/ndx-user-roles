@@ -1,32 +1,32 @@
 'use strict'
 
 module.exports = (ndx) ->
-  extendUser = ->
-    if ndx.user
-      if Object.prototype.toString.call(ndx.user) is '[object Object]'
-        ndx.user.addRole = (role) ->
+  extendUser = (user) ->
+    if user
+      if Object.prototype.toString.call(user) is '[object Object]'
+        user.addRole = (role) ->
           addKey = (root, key) ->
             if not root[key]
               root[key] = {}
             root[key]
           keys = role.split /\./g
-          if not ndx.user.roles
-            ndx.user.roles = {}
-          root = ndx.user.roles
+          if not user.roles
+            user.roles = {}
+          root = user.roles
           for key in keys
             root = addKey root, key
           where = {}
-          where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
+          where[ndx.settings.AUTO_ID] = user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
-            roles: ndx.user.roles
+            roles: user.roles
           , where, null, true
           return
-        ndx.user.removeRole = (role) ->
+        user.removeRole = (role) ->
           getKey = (root, key) ->
             root[key]
           keys = role.split /\./g
-          if ndx.user.roles and keys.length
-            root = ndx.user.roles
+          if user.roles and keys.length
+            root = user.roles
             i = 0
             key = ''
             while i < keys.length - 1
@@ -36,18 +36,18 @@ module.exports = (ndx) ->
             key = keys[keys.length - 1]
             if root[key]
               delete root[key]
-          where[ndx.settings.AUTO_ID] = ndx.user[ndx.settings.AUTO_ID]
+          where[ndx.settings.AUTO_ID] = user[ndx.settings.AUTO_ID]
           ndx.database.update ndx.settings.USER_TABLE,
-            roles: ndx.user.roles
+            roles: user.roles
           , where, null, true
           return
-        ndx.user.hasRole = (role) ->
+        user.hasRole = (role) ->
           getKey = (root, key) ->
             root[key]
           keys = role.split /\./g
           allgood = false
-          if ndx.user.roles
-            root = ndx.user.roles
+          if user.roles
+            root = user.roles
             for key in keys
               root = getKey root, key
               if root
@@ -57,7 +57,7 @@ module.exports = (ndx) ->
                 break
           allgood
   ndx.app.use '/api/*', (req, res, next) ->
-    extendUser()
+    extendUser ndx.user
     next()
   ndx.authenticate = (role, obj) ->
     (req, res, next) ->
